@@ -1,0 +1,44 @@
+micronaut:
+  security:
+    enabled: true
+    endpoints:
+      login:
+        enabled: true
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: someSecretJustToAvoidWarningInLogsMustBe256BitsLong
+              jws-algorithm: HS256
+  ssl:
+    enabled: true
+    buildSelfSigned: true
+    port: 8080 # web UI port
+#   TODO custom web server certificate
+
+akhq:
+  connections:
+    kafka-ssl:
+      properties:
+        bootstrap.servers: "${ADVERTISED_IP}:${SSL_PORT}"
+        security.protocol: SSL
+        ssl.truststore.location: /app/kafka-server.truststore.jks
+        ssl.truststore.password: truststorepass
+        ssl.truststore.type: PKCS12
+        ssl.keystore.location: /app/kafka-client.keystore.jks
+        ssl.keystore.password: keystorepass
+#       ssl.key.password: password
+        ssl.keystore.type: PKCS12
+#       ssl.endpoint.identification.algorithm: "" # disable hostname verification
+#     kafka-plaintext:
+#       properties:
+#         bootstrap.servers: "${ADVERTISED_IP}:${PLAINTEXT_PORT}"
+
+  security:
+    default-group: no-roles
+    basic-auth:
+      - username: digitbrain
+        password: cd4b858fa9b7b52dc218cd66f3a0471ed95b8557c92b8f6a92bec4151b5e58bf
+        groups:
+        - admin

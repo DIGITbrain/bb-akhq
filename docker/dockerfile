@@ -1,0 +1,14 @@
+# docker build -t akhq:0.20.0 .
+# docker run -d --name akhq -e ADVERTISED_IP=xxx.xxx.xxx.xxx -e SSL_PORT=9093 -p 8080:8080 akhq:0.20.0
+
+FROM tchiotludo/akhq:0.20.0
+USER root
+COPY ./application.yml /app/application.yml
+RUN chown akhq:root /app/application.yml
+
+COPY ./certificates/kafka-server.truststore.jks /app/kafka-server.truststore.jks
+RUN chown akhq:root /app/kafka-server.truststore.jks; chmod 600 /app/kafka-server.truststore.jks;
+COPY ./certificates/kafka-client.keystore.jks /app/kafka-client.keystore.jks
+RUN chown akhq:root /app/kafka-client.keystore.jks; chmod 600 /app/kafka-client.keystore.jks;
+
+USER akhq
